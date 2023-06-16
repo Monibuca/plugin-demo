@@ -7,7 +7,15 @@ import (
 	"m7s.live/engine/v4/config"
 	"m7s.live/engine/v4/track"
 )
-
+/*
+自定义配置结构体
+配置文件中可以添加相关配置来设置结构体的值
+demo:
+	http:
+	publish:
+	subscribe:
+	foo: bar
+*/
 type DemoConfig struct {
 	config.HTTP
 	config.Publish
@@ -16,13 +24,13 @@ type DemoConfig struct {
 }
 
 var demoConfig DemoConfig
-
+// 安装插件
 var DemoPlugin = InstallPlugin(&demoConfig)
-
+// 插件事件回调，来自事件总线
 func (conf *DemoConfig) OnEvent(event any) {
 	switch event.(type) {
 	case FirstConfig:
-		// 插件启动
+		// 插件启动事件
 		break
 	}
 }
@@ -54,11 +62,11 @@ func (conf *DemoConfig) API_test_sub(rw http.ResponseWriter, r *http.Request) {
 	}
 	rw.Write([]byte("test_sub"))
 }
-
+// 自定义发布者
 type DemoPublisher struct {
 	Publisher
 }
-
+// 发布者事件回调
 func (pub *DemoPublisher) OnEvent(event any) {
 	switch event.(type) {
 	case IPublisher:
@@ -67,11 +75,11 @@ func (pub *DemoPublisher) OnEvent(event any) {
 		pub.Publisher.OnEvent(event)
 	}
 }
-
+// 自定义订阅者
 type DemoSubscriber struct {
 	Subscriber
 }
-
+// 订阅者事件回调
 func (sub *DemoSubscriber) OnEvent(event any) {
 	switch event.(type) {
 	case ISubscriber:
